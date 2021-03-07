@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:title="Home"
+        android:icon="@drawable/my_home" />
+
+    <item
+        android:id="@+id/anggaran"
+        android:title="Anggaran"
+        android:icon="@drawable/ic_attach_money_black_24dp" />
+
+    <item
+        android:id="@+id/transaksi"
+        android:title="Transaksi"
+        android:icon="@drawable/ic_payment_black_24dp" />
+
+    <item
+        android:id="@+id/keluar"
+        android:title="Keluar"
+        android:icon="@drawable/ic_exit_to_app_black_24dp" />
+
+</menu>
