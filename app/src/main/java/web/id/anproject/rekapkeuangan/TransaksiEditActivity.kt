@@ -3,7 +3,6 @@ package web.id.anproject.rekapkeuangan
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,33 +11,44 @@ import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_add_transaksi.*
+import kotlinx.android.synthetic.main.activity_transaksi_edit.*
 import web.id.anproject.rekapkeuangan.model.BRTransaksi
 import java.util.*
-import kotlin.collections.ArrayList
 
-class AddTransaksiActivity : AppCompatActivity() {
+class TransaksiEditActivity : AppCompatActivity() {
 
     private val webService: WebService = WebService.create()
     private lateinit var disposable1: Disposable
     private lateinit var disposable2: Disposable
     private lateinit var disposable3: Disposable
     private lateinit var disposable4: Disposable
-    private var kegiatans: Array<String>  = arrayOf()
-    private var kegiatanIds: Array<String> = arrayOf()
     private var tahuns: Array<String> = arrayOf()
     private var tahunIds: Array<String> = arrayOf()
-    private lateinit var selectedKegiatan: String
     private lateinit var selectedTahun: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_transaksi)
+        setContentView(R.layout.activity_transaksi_edit)
+
         setSupportActionBar(toolbar)
         supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        kode.isEnabled = false
+        val iid = intent.extras?.get("id").toString()
+        val ikegiatan = intent.extras?.get("kegiatan").toString()
+        val ikode = intent.extras?.get("kode").toString()
+        val ipengeluaran = intent.extras?.get("pengeluaran").toString()
+        val itahun= intent.extras?.get("tahun").toString()
+        val itanggal = intent.extras?.get("tanggal").toString()
+
+        toolbar_title.text = ikode + " - " + ikegiatan
+        pengeluaran.setText(ipengeluaran)
+        tanggal.setText(itanggal)
+
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
 
         this.disposable1 = webService.tahuns()
             .observeOn(AndroidSchedulers.mainThread())
@@ -51,24 +61,6 @@ class AddTransaksiActivity : AppCompatActivity() {
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             })
 
-        this.disposable2 = webService.kegiatans()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe({
-                it.kegiatans.forEachIndexed { index, s -> this.kegiatans += s }
-                it.ids.forEachIndexed { index, s -> this.kegiatanIds += s }
-
-            }, {
-                var message = it.localizedMessage
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-            })
-
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
-
-
         tanggal.keyListener = null
         tanggal.setOnClickListener {
             hideKeyBoard()
@@ -78,67 +70,66 @@ class AddTransaksiActivity : AppCompatActivity() {
             dateTimePicker.show()
         }
 
-        optionTahun.keyListener = null
-        optionTahun.setOnClickListener {
-            hideKeyBoard()
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Pilih Tahun")
-            builder.setItems(this.tahuns, DialogInterface.OnClickListener { dialog, which ->
-                optionTahun.setText(tahuns[which])
-                this.selectedTahun = tahunIds[which]
-            })
-            builder.show()
-        }
-
-        optionKegiatan.keyListener = null
-        optionKegiatan.setOnClickListener {
-            hideKeyBoard()
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Pilih Kegiatan")
-            builder.setItems(this.kegiatans, DialogInterface.OnClickListener { dialog, which ->
-                optionKegiatan.setText(this.kegiatans[which])
-                this.selectedKegiatan = kegiatanIds[which]
-                this.disposable3 = webService.getAnggaranById(kegiatanIds[which])
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({
-                        kode.setText(it.kode)
-                        anggaran.setText("ANGGARAN : " + "Rp."+"%,d".format(it.anggaran))
-                    }, {
-                        var message = it.localizedMessage
-                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                    })
-            })
-            builder.show()
-        }
-
         saveTransaksi.setOnClickListener {
-            val kegiatan = optionKegiatan.text.toString()
-            val kode = kode.text.toString()
+            if (!this::selectedTahun.isInitialized) {
+                val idx = (this.tahuns.indices).firstOrNull{i: Int -> itahun == this.tahuns[i]}
+                if (idx != null) {
+                    this.selectedTahun = this.tahunIds[idx]
+                }
+            }
+            val kegiatan = ikegiatan
+            val kode = ikode
             val pengeluaran = pengeluaran.text.toString()
-            val tahun = optionTahun.text.toString()
+            val tahun = itahun
             val tanggal = tanggal.text.toString()
             val allValid = kegiatan.isNotEmpty() && kode.isNotEmpty() && pengeluaran.isNotEmpty() &&
                     tahun.isNotEmpty() && tanggal.isNotEmpty()
-            if (allValid) {
-                this.disposable4 = webService.transaksi(BRTransaksi(
-                    kode, kegiatan, pengeluaran, this.selectedTahun, tanggal
-                ))
+            if (allValid && this::selectedTahun.isInitialized) {
+                this.disposable4 = webService.transaksiUpdate(
+                    iid,
+                    BRTransaksi(kode, kegiatan, pengeluaran, this.selectedTahun, tanggal)
+                )
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({
-                        Toast.makeText(this, "Penambahan transaksi berhasil", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Update transaksi berhasil", Toast.LENGTH_SHORT).show()
                         val returnIntent = Intent()
                         setResult(Activity.RESULT_OK, returnIntent)
                         finish()
 
                     }, {
-//                        var message = it.localizedMessage
+                        //                        var message = it.localizedMessage
                         Toast.makeText(this, "Kegiatan sudah diinput atau tidak ada anggaran di bulan tersebut", Toast.LENGTH_SHORT).show()
                     })
             } else {
                 Toast.makeText(this, "Isikan semua data", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        deleteTransaksi.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Penghapusan Data")
+            builder.setMessage("Apakah anda yakin ingin menghapus dokumen ini ?")
+            builder.setNegativeButton("TIDAK") {dialog, which ->
+                false
+            }
+            builder.setPositiveButton("YA"){dialog, which ->
+                this.disposable3 = webService.transaksiDelete(iid)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({
+                        Toast.makeText(this, it.msg, Toast.LENGTH_SHORT).show()
+                        val returnIntent = Intent()
+                        setResult(Activity.RESULT_OK, returnIntent)
+                        finish()
+                    }, {
+                        var message = it.localizedMessage
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    })
+            }
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+
         }
     }
 
@@ -168,5 +159,4 @@ class AddTransaksiActivity : AppCompatActivity() {
         var view = this.currentFocus
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
-
 }

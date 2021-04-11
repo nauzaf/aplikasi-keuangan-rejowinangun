@@ -2,7 +2,6 @@ package web.id.anproject.rekapkeuangan
 
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -29,25 +28,27 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cardview.radius = 20.0f
-//        cardview.elevation = 20.0f
         anggaranBulanIniBox.radius = 10.0f
         transaksiBulanIniBox.radius = 10.0f
         sisaBulanIniBox.radius = 10.0f
-//        onLoad()
-//        this.disposable = webService.dashboard()
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribeOn(Schedulers.io())
-//            .subscribe({
-//                price1.text = "Rp."+"%,d".format(it.pengeluaranTahunan.toInt())
-//                persentage1.text = String.format("%.1f", it.pengeluaranTahunanPersen) + "%"
-//                price2.text = "Rp."+"%,d".format(it.sisaTahunan)
-//                persentage2.text = String.format("%.1f", it.sisaTahunanPersen) + "%"
-//                onFinishLoad()
-//            }, {
-//                var message = it.localizedMessage
-//                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//                onFinishLoad()
-//            })
+        onLoad()
+        this.disposable = webService.statistic()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                anggaran_bulan.text = "Rp."+"%,d".format(it.anggaranBulan)
+                transaksi_bulan.text = "Rp."+"%,d".format(it.pengeluaranBulan)
+                sisa_bulan.text = "Rp."+"%,d".format(it.sisaAnggaran)
+                val terealisasi = it.pengeluaranBulan.toFloat() / it.anggaranBulan.toFloat() * 100f
+                val tidakTerealisasi = it.sisaAnggaran.toFloat() / it.anggaranBulan.toFloat() * 100f
+                persentage1.text = String.format("%.1f", terealisasi) + "%"
+                persentage2.text = String.format("%.1f", tidakTerealisasi) + "%"
+                onFinishLoad()
+            }, {
+                var message = it.localizedMessage
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                onFinishLoad()
+            })
     }
 
     override fun onDestroy() {

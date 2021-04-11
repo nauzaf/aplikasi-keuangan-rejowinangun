@@ -1,6 +1,7 @@
 package web.id.anproject.rekapkeuangan.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,9 +30,22 @@ class AnggaranAdapter(val anggaranList: AnggaranList, val context: Context):
             .replace(",", ", ")
         holder.root.radius = 20.0f
         holder.root.elevation = 20.0f
-        holder.tvTitle.text = items.get(position).kegiatan.toUpperCase()
+
+        if (items.get(position).kegiatan.length < 20) {
+            holder.tvTitle.text = items.get(position).kegiatan.toUpperCase()
+        } else {
+            holder.tvTitle.text = items.get(position).kegiatan.substring(0, 20).toUpperCase() + " ..."
+        }
+
         holder.tvSubTitle.text = items.get(position).kode
-        holder.tvNote.text = bulanRealisasi
+
+        if (bulanRealisasi.length < 25) {
+            holder.tvNote.text = bulanRealisasi
+        } else {
+            holder.tvNote.text = bulanRealisasi.substring(0, 25) + " ..."
+        }
+
+        holder.tvNote2.text = items.get(position).tahun.toString()
         holder.tvPrice.text = "Rp."+"%,d".format(items.get(position).anggaran.toInt())
     }
 }
@@ -40,6 +54,7 @@ class AnggaranViewHolder(view: View): RecyclerView.ViewHolder(view) {
     val tvTitle = view.title
     val tvSubTitle = view.subtitle
     val tvNote = view.note
+    val tvNote2 = view.note2
     val tvPrice = view.price
     val root = view.itemTemplate
 }

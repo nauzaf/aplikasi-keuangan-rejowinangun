@@ -39,6 +39,7 @@
             android:layout_marginBottom="32dp"/>
 
         <EditText
+            android:id="@+id/emailLogin"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginBottom="16dp"
@@ -47,11 +48,13 @@
             android:background="@drawable/et_nice" />
 
         <EditText
+            android:id="@+id/passwordLogin"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginBottom="32dp"
             android:paddingLeft="16dp"
-            android:hint="Kode"
+            android:inputType="textPassword"
+            android:hint="Password"
             android:background="@drawable/et_nice" />
 
         <Button

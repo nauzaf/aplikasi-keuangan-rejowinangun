@@ -17,8 +17,8 @@
         android:icon="@drawable/ic_payment_black_24dp" />
 
     <item
-        android:id="@+id/keluar"
-        android:title="Keluar"
-        android:icon="@drawable/ic_exit_to_app_black_24dp" />
+        android:id="@+id/rekap"
+        android:title="Rekap"
+        android:icon="@drawable/ic_assignment_black_24dp" />
 
 </menu>

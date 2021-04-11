@@ -77,6 +77,7 @@
                             android:text="ANGGARAN BULAN INI"/>
 
                         <TextView
+                            android:id="@+id/anggaran_bulan"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="24sp"
@@ -124,6 +125,7 @@
                             android:text="TRANSAKSI BULAN INI"/>
 
                         <TextView
+                            android:id="@+id/transaksi_bulan"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="24sp"
@@ -171,6 +173,7 @@
                             android:text="SISA BULAN INI"/>
 
                         <TextView
+                            android:id="@+id/sisa_bulan"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="24sp"

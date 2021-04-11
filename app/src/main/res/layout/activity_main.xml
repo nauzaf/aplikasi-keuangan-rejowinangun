@@ -47,6 +47,19 @@
         app:headerLayout="@layout/header_nav"
         android:layout_gravity="start"
         app:itemTextColor="@color/textMain"
-        app:menu="@menu/menu_nav" />
+        app:menu="@menu/menu_nav">
+
+        <Button
+            android:id="@+id/btnKeluar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/btn_nice_red"
+            android:textColor="#fff"
+            android:text="KELUAR">
+
+        </Button>
+
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
