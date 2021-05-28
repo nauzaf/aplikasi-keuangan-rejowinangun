@@ -147,6 +147,7 @@ class AnggaranFragment : Fragment() {
                         startActivityForResult(intent, ANGGARAN_FOR_RESULT)
                     }
                 })
+                anggaranRv?.adapter?.notifyDataSetChanged()
                 onFinishLoad()
             }, {
                 var message = it.localizedMessage
@@ -184,7 +185,7 @@ class AnggaranFragment : Fragment() {
         pb.visibility = View.GONE
     }
 
-    fun RecyclerView.addOnItemClickListener(onClickListener: OnItemClickListener) {
+    fun RecyclerView.addOnItemClickListener(onClickListener: OnItemClickListener?) {
         this.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
             override fun onChildViewDetachedFromWindow(view: View) {
                 view?.setOnClickListener(null)
@@ -193,7 +194,7 @@ class AnggaranFragment : Fragment() {
             override fun onChildViewAttachedToWindow(view: View) {
                 view?.setOnClickListener({
                     val holder = getChildViewHolder(view)
-                    onClickListener.onItemClicked(holder.adapterPosition, view)
+                    onClickListener?.onItemClicked(holder.adapterPosition, view)
                 })
             }
         })

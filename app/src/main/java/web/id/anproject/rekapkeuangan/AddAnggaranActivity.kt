@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -108,7 +107,6 @@ class AddAnggaranActivity : AppCompatActivity() {
                 selectedBulan.add("Desember")
             }
 
-            Log.e("HAAAAA", selectedBulan.count().toString())
             var vol = 0
 
             if (volume.text.isNotEmpty()) {

@@ -44,6 +44,7 @@ class RekapFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .subscribe({
+                this.tahuns = arrayOf()
                 it.tahuns.forEachIndexed { index, s -> this.tahuns += s }
             }, {
                 var message = it.localizedMessage

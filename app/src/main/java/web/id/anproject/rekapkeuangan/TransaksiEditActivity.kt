@@ -6,6 +6,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -84,6 +85,11 @@ class TransaksiEditActivity : AppCompatActivity() {
             val tanggal = tanggal.text.toString()
             val allValid = kegiatan.isNotEmpty() && kode.isNotEmpty() && pengeluaran.isNotEmpty() &&
                     tahun.isNotEmpty() && tanggal.isNotEmpty()
+            Log.e("Ok1", kegiatan)
+            Log.e("Ok2", kode)
+            Log.e("Ok3", pengeluaran)
+            Log.e("Ok4", tahun)
+            Log.e("Ok5", tanggal)
             if (allValid && this::selectedTahun.isInitialized) {
                 this.disposable4 = webService.transaksiUpdate(
                     iid,
